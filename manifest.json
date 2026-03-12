@@ -2,8 +2,8 @@
   "name": "Форматер текста",
   "short_name": "Форматер",
   "description": "Быстрая очистка и форматирование текста",
-  "start_url": "/format-edit/index.html",
-  "scope": "/format-edit/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0b0f1a",
@@ -11,25 +11,25 @@
   "lang": "ru",
   "icons": [
     {
-      "src": "/format-edit/icons/icon-192.png",
+      "src": "./icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/format-edit/icons/icon-192.png",
+      "src": "./icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/format-edit/icons/icon-512.png",
+      "src": "./icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/format-edit/icons/icon-512.png",
+      "src": "./icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -41,7 +41,7 @@
       "name": "Новый текст",
       "short_name": "Новый",
       "description": "Открыть форматер с чистым полем",
-      "url": "./index.html"
+      "url": "./"
     }
   ]
 }

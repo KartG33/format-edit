@@ -1,7 +1,10 @@
-const CACHE_NAME = 'formatter-v2';
+const CACHE_NAME = 'formatter-v3';
 const ASSETS = [
+  './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 
 self.addEventListener('install', e => {
