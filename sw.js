@@ -1,10 +1,12 @@
-const CACHE_NAME = 'formatter-v3';
+const CACHE_NAME = 'e-dit-v1';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/icon-16x16.png',
+  './icons/icon-32x32.png',
+  './icons/icon-192x192.png',
+  './icons/icon-512x512.png'
 ];
 
 self.addEventListener('install', e => {
