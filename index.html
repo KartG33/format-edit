@@ -507,6 +507,28 @@
       background: var(--s3);
     }
 
+    /* ── CONTENT ROW ────────────────────── */
+    .content-row {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .main-col {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Sidebar — скрыт на мобайле */
+    .notes-sidebar {
+      display: none;
+    }
+
     /* ── EDITOR ─────────────────────────── */
     .editor-wrap {
       flex: 1;
@@ -995,56 +1017,36 @@
        ══════════════════════════════════════ */
     @media (min-width: 768px) {
 
-      /* Body становится горизонтальным flex */
-      body {
-        flex-direction: row;
-        flex-wrap: wrap;
+      /* content-row делит редактор и sidebar */
+      .content-row {
+        display: flex;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
       }
 
-      /* Хедер — во всю ширину */
-      .hdr {
-        width: 100%;
-        flex-shrink: 0;
-      }
-
-      /* Символы — во всю ширину */
-      .sym-bar {
-        width: 100%;
-        flex-shrink: 0;
-      }
-
-      /* File banner — во всю ширину */
-      .file-banner {
-        width: 100%;
-      }
-
-      /* Основной контент — editor + bottom bar слева */
       .main-col {
         flex: 1;
         min-width: 0;
         display: flex;
         flex-direction: column;
-        height: 0;
-        flex-grow: 1;
         overflow: hidden;
       }
 
       /* Sidebar заметок справа */
       .notes-sidebar {
-        width: 300px;
+        width: 280px;
         flex-shrink: 0;
         background: var(--s1);
         border-left: 1px solid var(--b1);
         display: flex;
         flex-direction: column;
         overflow: hidden;
-        /* растягивается на высоту между hdr+sym и низом */
       }
 
       .notes-sidebar-header {
         display: flex;
         align-items: center;
-        gap: 8px;
         padding: 12px 14px 0;
         flex-shrink: 0;
       }
@@ -1055,63 +1057,57 @@
         text-transform: uppercase;
         letter-spacing: .1em;
         color: var(--muted);
-        flex: 1;
       }
 
-      /* Вкладки внутри sidebar */
       .notes-sidebar .nm-tabs {
         margin: 10px 14px 0;
         flex-shrink: 0;
       }
 
-      /* Поле ввода имени заметки */
       .notes-sidebar .nm-save-row {
         padding: 10px 14px 0;
         flex-shrink: 0;
       }
 
-      /* Список */
       .notes-sidebar .nm-list {
         padding: 8px 14px 0;
+        flex: 1;
+        overflow-y: auto;
       }
 
-      /* Футер */
       .notes-sidebar .nm-footer {
         padding: 8px 14px 12px;
         flex-shrink: 0;
-        margin-top: auto;
       }
 
-      /* Контент вкладок в sidebar */
-      .notes-sidebar #nm-saved-panel,
-      .notes-sidebar #nm-hist-panel {
-        display: flex !important;
+      .notes-sidebar #nm-saved-panel {
+        display: flex;
         flex-direction: column;
         flex: 1;
         min-height: 0;
         overflow: hidden;
       }
 
-      /* Скрываем панель для нужной вкладки */
       .notes-sidebar #nm-saved-panel.nm-hidden,
       .notes-sidebar #nm-hist-panel.nm-hidden {
         display: none !important;
       }
 
-      /* Кнопка Заметки в bottom bar — скрыть на десктопе */
-      .btn-notes-mobile {
-        display: none !important;
+      .notes-sidebar #nm-hist-panel {
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
       }
 
-      /* Bottom bar — без кнопки Заметки, пересчитываем колонки */
-      .btm {
-        grid-template-columns: 1fr 1fr 1.6fr 1.6fr 1fr !important;
-      }
+      /* Кнопка Заметки в bottom bar — скрыть */
+      .btn-notes-mobile { display: none !important; }
 
-      /* notes-menu (bottom sheet) на десктопе не нужен */
-      .notes-menu, #nm-overlay {
-        display: none !important;
-      }
+      /* Bottom bar — 5 колонок */
+      .btm { grid-template-columns: 1fr 1fr 1.6fr 1.6fr 1fr !important; }
+
+      /* Bottom sheet на десктопе не нужен */
+      .notes-menu, #nm-overlay { display: none !important; }
     }
   </style>
 </head>
@@ -1206,6 +1202,8 @@
     </div>
   </div>
 
+  <!-- CONTENT ROW: editor + sidebar -->
+  <div class="content-row">
   <!-- EDITOR AREA -->
   <div class="main-col">
   <div class="editor-wrap" role="main">
@@ -1302,6 +1300,7 @@
       </div>
     </div>
   </aside>
+  </div><!-- /content-row -->
 
   <!-- FILE MENU SHEET -->
   <div class="fm-overlay" id="fm-overlay" onclick="closeFileMenu()"></div>
