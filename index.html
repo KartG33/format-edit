@@ -821,6 +821,175 @@
     .offline-dot {
       display: none;
     }
+
+    /* ── NOTES SHEET ─────────────────────── */
+    .notes-menu {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--s1);
+      border-top: 1px solid var(--b2);
+      border-radius: 20px 20px 0 0;
+      padding: 16px 16px;
+      padding-bottom: calc(20px + var(--safe-b));
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transform: translateY(100%);
+      transition: transform .3s cubic-bezier(.32, 1.2, .64, 1);
+      z-index: 50;
+      box-shadow: 0 -20px 60px rgba(0,0,0,.5);
+      max-height: 82dvh;
+    }
+    .notes-menu.open { transform: translateY(0); }
+
+    .nm-tabs {
+      display: flex;
+      gap: 0;
+      background: var(--s2);
+      border: 1px solid var(--b1);
+      border-radius: 10px;
+      padding: 3px;
+    }
+    .nm-tab {
+      flex: 1;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 8px 0;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .nm-tab.active {
+      background: var(--s3);
+      border: 1px solid var(--b2);
+      color: var(--text);
+    }
+
+    .nm-save-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .nm-save-input {
+      flex: 1;
+      background: var(--s2);
+      border: 1px solid var(--b2);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      outline: none;
+      caret-color: var(--accent);
+    }
+    .nm-save-input::placeholder { color: var(--muted); font-family: var(--sans); }
+    .nm-save-btn {
+      padding: 10px 18px;
+      border-radius: 10px;
+      background: var(--accent);
+      border: none;
+      color: #fff;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .nm-save-btn:active { background: var(--accent-d); }
+
+    .nm-list {
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-height: 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .nm-empty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12px;
+      padding: 24px 0;
+      font-style: italic;
+    }
+    .nm-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: var(--s2);
+      border: 1px solid var(--b1);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all .12s;
+      flex-shrink: 0;
+    }
+    .nm-item:active { background: var(--s3); }
+    .nm-item-body { flex: 1; min-width: 0; }
+    .nm-item-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .nm-item-meta {
+      font-size: 10px;
+      color: var(--muted);
+      font-family: var(--mono);
+      margin-top: 2px;
+    }
+    .nm-item-preview {
+      font-size: 11px;
+      color: var(--dim);
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .nm-del {
+      flex-shrink: 0;
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px 6px;
+      border-radius: 6px;
+      line-height: 1;
+    }
+    .nm-del:active { color: #f87171; background: rgba(239,68,68,.1); }
+
+    .nm-footer {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .nm-foot-btn {
+      flex: 1;
+      padding: 10px 0;
+      border-radius: 10px;
+      background: var(--s2);
+      border: 1px solid var(--b1);
+      color: var(--dim);
+      font-family: var(--sans);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: .03em;
+    }
+    .nm-foot-btn:active { background: var(--s3); color: var(--text); }
+    .nm-foot-btn.danger { color: #f87171; border-color: rgba(239,68,68,.2); }
+    .nm-foot-btn.danger:active { background: rgba(239,68,68,.1); }
   </style>
 </head>
 
@@ -892,12 +1061,12 @@
     <div class="replace-panel" id="replace-panel">
       <div class="rp-field">
         <span class="rp-label">что</span>
-        <input id="rp-from" type="text" placeholder="символ для замены" maxlength="10" autocomplete="off"
+        <input id="rp-from" type="text" placeholder="символ для замены" maxlength="50" autocomplete="off"
           spellcheck="false">
       </div>
       <div class="rp-field">
         <span class="rp-label">на</span>
-        <input id="rp-to" type="text" placeholder="чем заменить" maxlength="10" autocomplete="off" spellcheck="false">
+        <input id="rp-to" type="text" placeholder="чем заменить" maxlength="50" autocomplete="off" spellcheck="false">
       </div>
       <div class="rp-pair-hint" id="rp-pair-hint"></div>
       <div class="rp-row">
@@ -932,7 +1101,7 @@
   </div>
 
   <!-- BOTTOM BAR -->
-  <div class="btm">
+  <div class="btm" style="grid-template-columns: 1fr 1fr 1.6fr 1.6fr 1fr 1fr;">
     <button class="b-btn" onclick="doUndo()" aria-label="Отменить действие">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M3 7v6h6" />
@@ -968,6 +1137,16 @@
         <path d="M10 11v6M14 11v6" />
       </svg>
       Стереть
+    </button>
+    <button class="b-btn" onclick="openNotesMenu()" aria-label="Заметки и история" style="color:var(--yellow);border-color:rgba(245,158,11,.25)">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="16" y1="13" x2="8" y2="13"/>
+        <line x1="16" y1="17" x2="8" y2="17"/>
+        <polyline points="10 9 9 9 8 9"/>
+      </svg>
+      Заметки
     </button>
   </div>
 
@@ -1019,6 +1198,38 @@
 
   <!-- Hidden file input -->
   <input type="file" id="file-input" accept=".txt,text/plain" style="display:none">
+
+  <!-- NOTES SHEET -->
+  <div class="fm-overlay" id="nm-overlay" onclick="closeNotesMenu()"></div>
+  <div class="notes-menu" id="notes-menu">
+    <div class="fm-handle"></div>
+
+    <div class="nm-tabs">
+      <button class="nm-tab active" id="nm-tab-saved" onclick="switchNmTab('saved')">📌 Заметки</button>
+      <button class="nm-tab" id="nm-tab-hist" onclick="switchNmTab('hist')">🕓 История</button>
+    </div>
+
+    <!-- Saved tab -->
+    <div id="nm-saved-panel">
+      <div class="nm-save-row">
+        <input class="nm-save-input" id="nm-name" type="text" placeholder="Название заметки…" maxlength="60" autocomplete="off" spellcheck="false">
+        <button class="nm-save-btn" onclick="saveNote()">Сохранить</button>
+      </div>
+      <div class="nm-list" id="nm-saved-list"></div>
+      <div class="nm-footer">
+        <button class="nm-foot-btn" onclick="exportJSON()">⬇ Экспорт JSON</button>
+        <button class="nm-foot-btn danger" onclick="clearAllNotes()">🗑 Очистить всё</button>
+      </div>
+    </div>
+
+    <!-- History tab -->
+    <div id="nm-hist-panel" style="display:none;flex:1;min-height:0;display:none;flex-direction:column;gap:10px;">
+      <div class="nm-list" id="nm-hist-list"></div>
+      <div class="nm-footer">
+        <button class="nm-foot-btn danger" onclick="clearHistory()">🗑 Очистить историю</button>
+      </div>
+    </div>
+  </div>
 
   <div class="toast" id="toast"></div>
 
@@ -1507,6 +1718,7 @@
     async function doCopy() {
       const text = ed.value;
       if (!text.trim()) { toast('Нечего копировать'); return; }
+      addToSessHist(text); // история сессий
 
       // Метод 1: современный Clipboard API (работает на https://)
       if (navigator.clipboard && location.protocol === 'https:') {
@@ -1538,6 +1750,7 @@
 
     function doClear() {
       if (!ed.value) return;
+      addToSessHist(ed.value); // история сессий
       setValue('');
       currentFileName = null;
       fileHandle = null;
@@ -1686,7 +1899,199 @@
     });
 
     // ══════════════════════════════════════
-    // EDITOR EVENTS
+    // NOTES & SESSION HISTORY (localStorage)
+    // ══════════════════════════════════════
+
+    const LS_NOTES = 'edit_notes_v1';
+    const LS_HIST  = 'edit_session_hist_v1';
+    const MAX_SESS = 30; // максимум записей в истории сессий
+
+    function loadNotes() {
+      try { return JSON.parse(localStorage.getItem(LS_NOTES)) || []; } catch { return []; }
+    }
+    function saveNotes(arr) {
+      localStorage.setItem(LS_NOTES, JSON.stringify(arr));
+    }
+    function loadSessHist() {
+      try { return JSON.parse(localStorage.getItem(LS_HIST)) || []; } catch { return []; }
+    }
+    function saveSessHist(arr) {
+      localStorage.setItem(LS_HIST, JSON.stringify(arr));
+    }
+
+    // Форматирование даты
+    function fmtDate(ts) {
+      const d = new Date(ts);
+      const pad = n => String(n).padStart(2, '0');
+      return `${pad(d.getDate())}.${pad(d.getMonth()+1)}.${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    // Авто-имя по дате
+    function autoName() {
+      const d = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return `${pad(d.getDate())}.${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    // Сохранить заметку вручную
+    function saveNote() {
+      const text = ed.value.trim();
+      if (!text) { toast('Нет текста для сохранения'); return; }
+      const nameInput = document.getElementById('nm-name');
+      const name = nameInput.value.trim() || autoName();
+      const notes = loadNotes();
+      notes.unshift({ id: Date.now(), name, text, ts: Date.now() });
+      saveNotes(notes);
+      nameInput.value = '';
+      toast(`✓ Заметка «${name}» сохранена`);
+      renderSavedList();
+    }
+
+    // Добавить запись в историю сессий (вызывается при Стереть/Копировать)
+    function addToSessHist(text) {
+      if (!text || text.trim().length < 20) return;
+      const hist = loadSessHist();
+      // Не дублируем если тот же текст что и последний
+      if (hist.length > 0 && hist[0].text === text) return;
+      hist.unshift({ id: Date.now(), text, ts: Date.now() });
+      if (hist.length > MAX_SESS) hist.length = MAX_SESS;
+      saveSessHist(hist);
+    }
+
+    // Восстановить текст из заметки/истории
+    function restoreText(text) {
+      setValue(text);
+      closeNotesMenu();
+      toast('✓ Текст восстановлен');
+    }
+
+    // Удалить заметку
+    function deleteNote(id) {
+      const notes = loadNotes().filter(n => n.id !== id);
+      saveNotes(notes);
+      renderSavedList();
+      toast('Заметка удалена');
+    }
+
+    // Удалить запись из истории
+    function deleteSessEntry(id) {
+      const hist = loadSessHist().filter(n => n.id !== id);
+      saveSessHist(hist);
+      renderHistList();
+      toast('Запись удалена');
+    }
+
+    // Очистить все заметки
+    function clearAllNotes() {
+      if (!confirm('Удалить все сохранённые заметки?')) return;
+      saveNotes([]);
+      renderSavedList();
+      toast('Все заметки удалены');
+    }
+
+    // Очистить историю сессий
+    function clearHistory() {
+      if (!confirm('Очистить всю историю сессий?')) return;
+      saveSessHist([]);
+      renderHistList();
+      toast('История очищена');
+    }
+
+    // Экспорт JSON
+    function exportJSON() {
+      const data = {
+        exported: new Date().toISOString(),
+        notes: loadNotes(),
+        sessionHistory: loadSessHist()
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `edit-notes-${autoName().replace(/[: ]/g,'-')}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast('✓ JSON экспортирован');
+    }
+
+    // Рендер списка заметок
+    function renderSavedList() {
+      const list = document.getElementById('nm-saved-list');
+      const notes = loadNotes();
+      list.innerHTML = '';
+      if (!notes.length) {
+        list.innerHTML = '<div class="nm-empty">Нет сохранённых заметок</div>';
+        return;
+      }
+      notes.forEach(n => {
+        const item = document.createElement('div');
+        item.className = 'nm-item';
+        item.innerHTML = `
+          <div class="nm-item-body" onclick="restoreText(${JSON.stringify(n.text)})">
+            <div class="nm-item-name">${n.name}</div>
+            <div class="nm-item-meta">${fmtDate(n.ts)} · ${n.text.length} симв.</div>
+            <div class="nm-item-preview">${n.text.slice(0,80).replace(/\n/g,' ')}…</div>
+          </div>
+          <button class="nm-del" onclick="deleteNote(${n.id})" aria-label="Удалить">×</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // Рендер истории сессий
+    function renderHistList() {
+      const list = document.getElementById('nm-hist-list');
+      const hist = loadSessHist();
+      list.innerHTML = '';
+      if (!hist.length) {
+        list.innerHTML = '<div class="nm-empty">История пуста.<br>Появится автоматически при копировании или очистке текста.</div>';
+        return;
+      }
+      hist.forEach(n => {
+        const item = document.createElement('div');
+        item.className = 'nm-item';
+        item.innerHTML = `
+          <div class="nm-item-body" onclick="restoreText(${JSON.stringify(n.text)})">
+            <div class="nm-item-meta">${fmtDate(n.ts)} · ${n.text.length} симв.</div>
+            <div class="nm-item-preview">${n.text.slice(0,100).replace(/\n/g,' ')}…</div>
+          </div>
+          <button class="nm-del" onclick="deleteSessEntry(${n.id})" aria-label="Удалить">×</button>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    // Переключение вкладок в notes sheet
+    let currentNmTab = 'saved';
+    function switchNmTab(tab) {
+      currentNmTab = tab;
+      document.getElementById('nm-tab-saved').classList.toggle('active', tab === 'saved');
+      document.getElementById('nm-tab-hist').classList.toggle('active', tab === 'hist');
+      const sp = document.getElementById('nm-saved-panel');
+      const hp = document.getElementById('nm-hist-panel');
+      sp.style.display = tab === 'saved' ? '' : 'none';
+      hp.style.display = tab === 'hist' ? 'flex' : 'none';
+      if (tab === 'hist') { hp.style.flexDirection = 'column'; hp.style.flex = '1'; hp.style.minHeight = '0'; hp.style.gap = '10px'; }
+      if (tab === 'saved') renderSavedList();
+      else renderHistList();
+    }
+
+    function openNotesMenu() {
+      document.getElementById('notes-menu').classList.add('open');
+      document.getElementById('nm-overlay').classList.add('active');
+      // Подставляем авто-имя в поле если пустое
+      const ni = document.getElementById('nm-name');
+      if (!ni.value) ni.value = autoName();
+      if (currentNmTab === 'saved') renderSavedList();
+      else renderHistList();
+    }
+    function closeNotesMenu() {
+      document.getElementById('notes-menu').classList.remove('open');
+      document.getElementById('nm-overlay').classList.remove('active');
+    }
+
+    // ══════════════════════════════════════
+    // INIT
     // ══════════════════════════════════════
     let edTimer;
     let wasEmpty = true; // отслеживаем — было ли поле пустым

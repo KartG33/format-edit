@@ -1,4 +1,4 @@
-const CACHE_NAME = 'e-dit-v1';
+const CACHE_NAME = 'e-dit-v2';
 const ASSETS = [
   './',
   './index.html',
