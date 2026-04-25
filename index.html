@@ -990,6 +990,129 @@
     .nm-foot-btn:active { background: var(--s3); color: var(--text); }
     .nm-foot-btn.danger { color: #f87171; border-color: rgba(239,68,68,.2); }
     .nm-foot-btn.danger:active { background: rgba(239,68,68,.1); }
+    /* ══════════════════════════════════════
+       DESKTOP LAYOUT (≥768px)
+       ══════════════════════════════════════ */
+    @media (min-width: 768px) {
+
+      /* Body становится горизонтальным flex */
+      body {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      /* Хедер — во всю ширину */
+      .hdr {
+        width: 100%;
+        flex-shrink: 0;
+      }
+
+      /* Символы — во всю ширину */
+      .sym-bar {
+        width: 100%;
+        flex-shrink: 0;
+      }
+
+      /* File banner — во всю ширину */
+      .file-banner {
+        width: 100%;
+      }
+
+      /* Основной контент — editor + bottom bar слева */
+      .main-col {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        height: 0;
+        flex-grow: 1;
+        overflow: hidden;
+      }
+
+      /* Sidebar заметок справа */
+      .notes-sidebar {
+        width: 300px;
+        flex-shrink: 0;
+        background: var(--s1);
+        border-left: 1px solid var(--b1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        /* растягивается на высоту между hdr+sym и низом */
+      }
+
+      .notes-sidebar-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 14px 0;
+        flex-shrink: 0;
+      }
+
+      .notes-sidebar-title {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .1em;
+        color: var(--muted);
+        flex: 1;
+      }
+
+      /* Вкладки внутри sidebar */
+      .notes-sidebar .nm-tabs {
+        margin: 10px 14px 0;
+        flex-shrink: 0;
+      }
+
+      /* Поле ввода имени заметки */
+      .notes-sidebar .nm-save-row {
+        padding: 10px 14px 0;
+        flex-shrink: 0;
+      }
+
+      /* Список */
+      .notes-sidebar .nm-list {
+        padding: 8px 14px 0;
+      }
+
+      /* Футер */
+      .notes-sidebar .nm-footer {
+        padding: 8px 14px 12px;
+        flex-shrink: 0;
+        margin-top: auto;
+      }
+
+      /* Контент вкладок в sidebar */
+      .notes-sidebar #nm-saved-panel,
+      .notes-sidebar #nm-hist-panel {
+        display: flex !important;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      /* Скрываем панель для нужной вкладки */
+      .notes-sidebar #nm-saved-panel.nm-hidden,
+      .notes-sidebar #nm-hist-panel.nm-hidden {
+        display: none !important;
+      }
+
+      /* Кнопка Заметки в bottom bar — скрыть на десктопе */
+      .btn-notes-mobile {
+        display: none !important;
+      }
+
+      /* Bottom bar — без кнопки Заметки, пересчитываем колонки */
+      .btm {
+        grid-template-columns: 1fr 1fr 1.6fr 1.6fr 1fr !important;
+      }
+
+      /* notes-menu (bottom sheet) на десктопе не нужен */
+      .notes-menu, #nm-overlay {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 
@@ -1084,6 +1207,7 @@
   </div>
 
   <!-- EDITOR AREA -->
+  <div class="main-col">
   <div class="editor-wrap" role="main">
     <div class="file-banner" id="file-banner">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1138,7 +1262,7 @@
       </svg>
       Стереть
     </button>
-    <button class="b-btn" onclick="openNotesMenu()" aria-label="Заметки и история" style="color:var(--yellow);border-color:rgba(245,158,11,.25)">
+    <button class="b-btn btn-notes-mobile" onclick="openNotesMenu()" aria-label="Заметки и история" style="color:var(--yellow);border-color:rgba(245,158,11,.25)">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
         <polyline points="14 2 14 8 20 8"/>
@@ -1149,6 +1273,35 @@
       Заметки
     </button>
   </div>
+  </div><!-- /main-col -->
+
+  <!-- NOTES SIDEBAR (desktop) -->
+  <aside class="notes-sidebar">
+    <div class="notes-sidebar-header">
+      <span class="notes-sidebar-title">Заметки</span>
+    </div>
+    <div class="nm-tabs">
+      <button class="nm-tab active" id="sb-tab-saved" onclick="switchSbTab('saved')">📌 Сохранённые</button>
+      <button class="nm-tab" id="sb-tab-hist" onclick="switchSbTab('hist')">🕓 История</button>
+    </div>
+    <div id="nm-saved-panel" style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;">
+      <div class="nm-save-row">
+        <input class="nm-save-input" id="nm-name" type="text" placeholder="Название заметки…" maxlength="60" autocomplete="off" spellcheck="false">
+        <button class="nm-save-btn" onclick="saveNote()">↓</button>
+      </div>
+      <div class="nm-list" id="nm-saved-list" style="padding:8px 14px 0;"></div>
+      <div class="nm-footer">
+        <button class="nm-foot-btn" onclick="exportJSON()">⬇ JSON</button>
+        <button class="nm-foot-btn danger" onclick="clearAllNotes()">🗑 Всё</button>
+      </div>
+    </div>
+    <div id="nm-hist-panel" class="nm-hidden" style="display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;">
+      <div class="nm-list" id="nm-hist-list" style="padding:8px 14px 0;flex:1;"></div>
+      <div class="nm-footer">
+        <button class="nm-foot-btn danger" onclick="clearHistory()">🗑 Очистить историю</button>
+      </div>
+    </div>
+  </aside>
 
   <!-- FILE MENU SHEET -->
   <div class="fm-overlay" id="fm-overlay" onclick="closeFileMenu()"></div>
@@ -1210,12 +1363,12 @@
     </div>
 
     <!-- Saved tab -->
-    <div id="nm-saved-panel">
+    <div id="nm-sheet-saved-panel">
       <div class="nm-save-row">
-        <input class="nm-save-input" id="nm-name" type="text" placeholder="Название заметки…" maxlength="60" autocomplete="off" spellcheck="false">
+        <input class="nm-save-input" id="nm-sheet-name" type="text" placeholder="Название заметки…" maxlength="60" autocomplete="off" spellcheck="false">
         <button class="nm-save-btn" onclick="saveNote()">Сохранить</button>
       </div>
-      <div class="nm-list" id="nm-saved-list"></div>
+      <div class="nm-list" id="nm-sheet-saved-list"></div>
       <div class="nm-footer">
         <button class="nm-foot-btn" onclick="exportJSON()">⬇ Экспорт JSON</button>
         <button class="nm-foot-btn danger" onclick="clearAllNotes()">🗑 Очистить всё</button>
@@ -1223,8 +1376,8 @@
     </div>
 
     <!-- History tab -->
-    <div id="nm-hist-panel" style="display:none;flex:1;min-height:0;display:none;flex-direction:column;gap:10px;">
-      <div class="nm-list" id="nm-hist-list"></div>
+    <div id="nm-sheet-hist-panel" style="display:none;flex:1;min-height:0;flex-direction:column;gap:10px;">
+      <div class="nm-list" id="nm-sheet-hist-list"></div>
       <div class="nm-footer">
         <button class="nm-foot-btn danger" onclick="clearHistory()">🗑 Очистить историю</button>
       </div>
@@ -1937,12 +2090,15 @@
     function saveNote() {
       const text = ed.value.trim();
       if (!text) { toast('Нет текста для сохранения'); return; }
-      const nameInput = document.getElementById('nm-name');
+      // Читаем имя из sidebar (десктоп) или sheet (мобайл)
+      const nameInput = document.getElementById('nm-name') || document.getElementById('nm-sheet-name');
+      const sheetInput = document.getElementById('nm-sheet-name');
       const name = nameInput.value.trim() || autoName();
       const notes = loadNotes();
       notes.unshift({ id: Date.now(), name, text, ts: Date.now() });
       saveNotes(notes);
-      nameInput.value = '';
+      if (nameInput) nameInput.value = '';
+      if (sheetInput && sheetInput !== nameInput) sheetInput.value = '';
       toast(`✓ Заметка «${name}» сохранена`);
       renderSavedList();
     }
@@ -2014,61 +2170,85 @@
       toast('✓ JSON экспортирован');
     }
 
-    // Рендер списка заметок
+    // Рендер списка заметок (sidebar + sheet)
+    const _noteTexts = new Map(); // id → text для безопасного onclick
     function renderSavedList() {
-      const list = document.getElementById('nm-saved-list');
+      const containers = ['nm-saved-list', 'nm-sheet-saved-list'].map(id => document.getElementById(id)).filter(Boolean);
       const notes = loadNotes();
-      list.innerHTML = '';
-      if (!notes.length) {
-        list.innerHTML = '<div class="nm-empty">Нет сохранённых заметок</div>';
-        return;
-      }
-      notes.forEach(n => {
-        const item = document.createElement('div');
-        item.className = 'nm-item';
-        item.innerHTML = `
-          <div class="nm-item-body" onclick="restoreText(${JSON.stringify(n.text)})">
-            <div class="nm-item-name">${n.name}</div>
+      containers.forEach(list => {
+        list.innerHTML = '';
+        if (!notes.length) {
+          list.innerHTML = '<div class="nm-empty">Нет сохранённых заметок</div>';
+          return;
+        }
+        notes.forEach(n => {
+          _noteTexts.set('note_' + n.id, n.text);
+          const item = document.createElement('div');
+          item.className = 'nm-item';
+          const body = document.createElement('div');
+          body.className = 'nm-item-body';
+          body.innerHTML = `
+            <div class="nm-item-name">${escHtml(n.name)}</div>
             <div class="nm-item-meta">${fmtDate(n.ts)} · ${n.text.length} симв.</div>
-            <div class="nm-item-preview">${n.text.slice(0,80).replace(/\n/g,' ')}…</div>
-          </div>
-          <button class="nm-del" onclick="deleteNote(${n.id})" aria-label="Удалить">×</button>
-        `;
-        list.appendChild(item);
+            <div class="nm-item-preview">${escHtml(n.text.slice(0,80).replace(/\n/g,' '))}…</div>
+          `;
+          body.addEventListener('click', () => restoreText(n.text));
+          const del = document.createElement('button');
+          del.className = 'nm-del';
+          del.textContent = '×';
+          del.setAttribute('aria-label', 'Удалить');
+          del.addEventListener('click', (e) => { e.stopPropagation(); deleteNote(n.id); });
+          item.appendChild(body);
+          item.appendChild(del);
+          list.appendChild(item);
+        });
       });
     }
 
-    // Рендер истории сессий
+    // Рендер истории сессий (sidebar + sheet)
     function renderHistList() {
-      const list = document.getElementById('nm-hist-list');
+      const containers = ['nm-hist-list', 'nm-sheet-hist-list'].map(id => document.getElementById(id)).filter(Boolean);
       const hist = loadSessHist();
-      list.innerHTML = '';
-      if (!hist.length) {
-        list.innerHTML = '<div class="nm-empty">История пуста.<br>Появится автоматически при копировании или очистке текста.</div>';
-        return;
-      }
-      hist.forEach(n => {
-        const item = document.createElement('div');
-        item.className = 'nm-item';
-        item.innerHTML = `
-          <div class="nm-item-body" onclick="restoreText(${JSON.stringify(n.text)})">
+      containers.forEach(list => {
+        list.innerHTML = '';
+        if (!hist.length) {
+          list.innerHTML = '<div class="nm-empty">История пуста.<br>Появится автоматически при копировании или очистке текста.</div>';
+          return;
+        }
+        hist.forEach(n => {
+          const item = document.createElement('div');
+          item.className = 'nm-item';
+          const body = document.createElement('div');
+          body.className = 'nm-item-body';
+          body.innerHTML = `
             <div class="nm-item-meta">${fmtDate(n.ts)} · ${n.text.length} симв.</div>
-            <div class="nm-item-preview">${n.text.slice(0,100).replace(/\n/g,' ')}…</div>
-          </div>
-          <button class="nm-del" onclick="deleteSessEntry(${n.id})" aria-label="Удалить">×</button>
-        `;
-        list.appendChild(item);
+            <div class="nm-item-preview">${escHtml(n.text.slice(0,100).replace(/\n/g,' '))}…</div>
+          `;
+          body.addEventListener('click', () => restoreText(n.text));
+          const del = document.createElement('button');
+          del.className = 'nm-del';
+          del.textContent = '×';
+          del.setAttribute('aria-label', 'Удалить');
+          del.addEventListener('click', (e) => { e.stopPropagation(); deleteSessEntry(n.id); });
+          item.appendChild(body);
+          item.appendChild(del);
+          list.appendChild(item);
+        });
       });
     }
 
-    // Переключение вкладок в notes sheet
+    function escHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // Переключение вкладок в notes sheet (mobile)
     let currentNmTab = 'saved';
     function switchNmTab(tab) {
       currentNmTab = tab;
       document.getElementById('nm-tab-saved').classList.toggle('active', tab === 'saved');
       document.getElementById('nm-tab-hist').classList.toggle('active', tab === 'hist');
-      const sp = document.getElementById('nm-saved-panel');
-      const hp = document.getElementById('nm-hist-panel');
+      const sp = document.getElementById('nm-sheet-saved-panel');
+      const hp = document.getElementById('nm-sheet-hist-panel');
       sp.style.display = tab === 'saved' ? '' : 'none';
       hp.style.display = tab === 'hist' ? 'flex' : 'none';
       if (tab === 'hist') { hp.style.flexDirection = 'column'; hp.style.flex = '1'; hp.style.minHeight = '0'; hp.style.gap = '10px'; }
@@ -2079,15 +2259,33 @@
     function openNotesMenu() {
       document.getElementById('notes-menu').classList.add('open');
       document.getElementById('nm-overlay').classList.add('active');
-      // Подставляем авто-имя в поле если пустое
-      const ni = document.getElementById('nm-name');
-      if (!ni.value) ni.value = autoName();
+      const ni = document.getElementById('nm-sheet-name');
+      if (ni && !ni.value) ni.value = autoName();
       if (currentNmTab === 'saved') renderSavedList();
       else renderHistList();
     }
     function closeNotesMenu() {
       document.getElementById('notes-menu').classList.remove('open');
       document.getElementById('nm-overlay').classList.remove('active');
+    }
+
+    // Переключение вкладок в sidebar (desktop)
+    let currentSbTab = 'saved';
+    function switchSbTab(tab) {
+      currentSbTab = tab;
+      document.getElementById('sb-tab-saved').classList.toggle('active', tab === 'saved');
+      document.getElementById('sb-tab-hist').classList.toggle('active', tab === 'hist');
+      const sp = document.getElementById('nm-saved-panel');
+      const hp = document.getElementById('nm-hist-panel');
+      if (tab === 'saved') {
+        sp.style.display = 'flex'; sp.classList.remove('nm-hidden');
+        hp.style.display = 'none'; hp.classList.add('nm-hidden');
+        renderSavedList();
+      } else {
+        hp.style.display = 'flex'; hp.classList.remove('nm-hidden');
+        sp.style.display = 'none'; sp.classList.add('nm-hidden');
+        renderHistList();
+      }
     }
 
     // ══════════════════════════════════════
@@ -2117,6 +2315,10 @@
     ed.value = '';
     renderFmtBtns();
     render();
+    renderSavedList(); // sidebar desktop
+    // Авто-имя в sidebar
+    const _sbn = document.getElementById('nm-name');
+    if (_sbn) _sbn.value = autoName();
   </script>
 </body>
 
