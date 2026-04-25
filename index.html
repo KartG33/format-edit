@@ -1755,6 +1755,9 @@
       punct: [
         { label: 'Пробел до знака', fn: 'fmt_space_before' },
         { label: 'Пробел после знака', fn: 'fmt_space_after' },
+        { label: 'Убрать пунктуацию', fn: 'fmt_remove_punct' },
+        { label: 'Убрать ( ) [ ]', fn: 'fmt_remove_brackets' },
+        { label: 'Заменить пунктуацию', fn: 'fmt_replace_punct' },
       ],
       struct: [
         { label: 'Лишние строки', fn: 'fmt_lines' },
@@ -1816,6 +1819,41 @@
     function fmt_space_after() {
       setValue(ed.value.replace(/([,\.!?:;])([^\s\n\d"'»)\]\}])/g, '$1 $2'));
       toast('Пробелы после знаков добавлены');
+    }
+
+    // Убрать все знаки препинания
+    function fmt_remove_punct() {
+      const before = ed.value;
+      const after = before.replace(/[.,!?;:'"«»\-—–()\[\]{}\u2018\u2019\u201C\u201D]/g, '');
+      const cnt = before.length - after.length;
+      setValue(after);
+      toast(cnt > 0 ? `Убрано ${cnt} знаков препинания` : 'Знаков препинания не найдено');
+    }
+
+    // Убрать скобки и их содержимое
+    function fmt_remove_brackets() {
+      const before = ed.value;
+      // Круглые, квадратные, фигурные — с содержимым
+      let after = before;
+      after = after.replace(/\([^)]*\)/g, '');
+      after = after.replace(/\[[^\]]*\]/g, '');
+      after = after.replace(/\{[^}]*\}/g, '');
+      // Убираем двойные пробелы после удаления
+      after = after.replace(/[ \t]{2,}/g, ' ').replace(/^ +| +$/gm, '');
+      const cnt = before.length - after.length;
+      setValue(after);
+      toast(cnt > 0 ? `Скобки с содержимым убраны` : 'Скобок не найдено');
+    }
+
+    // Заменить знаки препинания на другой символ
+    function fmt_replace_punct() {
+      const repl = prompt('На что заменить знаки препинания? (оставьте пустым чтобы убрать)', '');
+      if (repl === null) return; // отмена
+      const before = ed.value;
+      const after = before.replace(/[.,!?;:'"«»\-—–()\[\]{}\u2018\u2019\u201C\u201D]/g, repl);
+      const cnt = (before.match(/[.,!?;:'"«»\-—–()\[\]{}\u2018\u2019\u201C\u201D]/g) || []).length;
+      setValue(after);
+      toast(cnt > 0 ? `Заменено ${cnt} знаков` : 'Знаков препинания не найдено');
     }
 
     // Неразрывные пробелы → обычные
